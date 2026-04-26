@@ -1,7 +1,7 @@
 // CHANGE THIS TO YOUR RENDER URL AFTER DEPLOYING (e.g. 'https://your-backend.onrender.com')
 window.BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? 'http://localhost:4000' 
-    : 'https://YOUR_RENDER_BACKEND_URL_HERE.onrender.com';
+    : 'https://employ-edge-backend.onrender.com';
 
 const API_BASE = `${window.BACKEND_URL}/api/v1`;
 
