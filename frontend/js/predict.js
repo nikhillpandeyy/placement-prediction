@@ -387,14 +387,17 @@ async function loadDashboardData() {
             animateCountUp(document.getElementById('kpi-avg-score'), avgScore, '%', 800);
             animateCountUp(document.getElementById('kpi-placement-rate'), placeRate, '%', 800);
             
+            // Sort history ascending to guarantee the last element is the newest
+            const sortedHistory = [...history].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+            const latest = sortedHistory[sortedHistory.length - 1];
+
             // Last eval time (friendly format)
-            const lastDate = new Date(history[history.length - 1].createdAt);
+            const lastDate = new Date(latest.createdAt);
             const now = new Date();
             const diffHours = Math.round((now - lastDate) / (1000 * 60 * 60));
             document.getElementById('kpi-last-eval').textContent = diffHours === 0 ? 'Just now' : `${diffHours}h ago`;
             
             // Profile Readiness (latest score)
-            const latest = history[history.length - 1];
             const latestScore = parseFloat(latest.result?.placement_score || (latest.result?.placement_probability * 100) || 0);
             const ringPctEl = document.getElementById('welcome-ring-pct');
             const ringEl = document.getElementById('welcome-ring');
