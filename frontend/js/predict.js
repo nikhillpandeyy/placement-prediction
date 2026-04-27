@@ -393,6 +393,21 @@ async function loadDashboardData() {
             const diffHours = Math.round((now - lastDate) / (1000 * 60 * 60));
             document.getElementById('kpi-last-eval').textContent = diffHours === 0 ? 'Just now' : `${diffHours}h ago`;
             
+            // Profile Readiness (latest score)
+            const latest = history[history.length - 1];
+            const latestScore = parseFloat(latest.result?.placement_score || (latest.result?.placement_probability * 100) || 0);
+            const ringPctEl = document.getElementById('welcome-ring-pct');
+            const ringEl = document.getElementById('welcome-ring');
+            if (ringPctEl && ringEl) {
+                animateCountUp(ringPctEl, latestScore, '%', 800);
+                const offset = 97.4 - (latestScore / 100) * 97.4;
+                ringEl.style.transition = 'stroke-dashoffset 1s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                setTimeout(() => ringEl.setAttribute('stroke-dashoffset', offset), 100);
+                
+                const hintEl = document.querySelector('.welcome-stat-hint');
+                if (hintEl) hintEl.textContent = 'Based on latest evaluation';
+            }
+            
             // Initialize charts
             if (typeof initDashboardCharts === 'function') {
                 initDashboardCharts(history);
