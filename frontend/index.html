@@ -301,18 +301,18 @@
         <p class="section-subtitle scroll-reveal">Interested in deploying EmployEdge at your university or institution? Contact our team for enterprise solutions.</p>
         
         <div class="contact-container scroll-reveal">
-            <form id="contact-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent = '✓ Sent!'; this.querySelector('button').disabled = true; setTimeout(() => { this.reset(); this.querySelector('button').textContent = 'Send Message'; this.querySelector('button').disabled = false; }, 3000);">
+            <form id="contact-form">
                 <div class="field-group">
                     <label for="contact-name">Name</label>
-                    <input type="text" id="contact-name" placeholder="John Doe" required>
+                    <input type="text" id="contact-name" name="name" placeholder="John Doe" required>
                 </div>
                 <div class="field-group">
                     <label for="contact-email">Email</label>
-                    <input type="email" id="contact-email" placeholder="john@university.edu" required>
+                    <input type="email" id="contact-email" name="email" placeholder="john@university.edu" required>
                 </div>
                 <div class="field-group">
                     <label for="contact-message">Message</label>
-                    <textarea id="contact-message" rows="4" placeholder="How can we help you?" required></textarea>
+                    <textarea id="contact-message" name="message" rows="4" placeholder="How can we help you?" required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary btn-full mt-2">Send Message</button>
             </form>
@@ -371,6 +371,47 @@
             const progress = (scrolled / height) * 100;
             document.getElementById('scroll-progress').style.width = progress + '%';
         }, { passive: true });
+
+        // Contact Form Submission (Formspree API)
+        document.getElementById('contact-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            try {
+                //  Formspree form ID used to connect  constact form  to our backend
+                const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xpqkejeg';
+
+                const response = await fetch(FORMSPREE_ENDPOINT, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    btn.textContent = '✓ Sent Successfully!';
+                    form.reset();
+                } else {
+                    const data = await response.json();
+                    btn.textContent = '❌ Failed to send';
+                    console.error('Formspree Error:', data.errors || 'Unknown error');
+                }
+            } catch (err) {
+                btn.textContent = '❌ Network Error';
+                console.error('Contact Error:', err);
+            }
+
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }, 4000);
+        });
     </script>
 </body>
 </html>
