@@ -1,4 +1,4 @@
-// CHANGE THIS TO YOUR RENDER URL AFTER DEPLOYING (e.g. 'https://your-backend.onrender.com')
+// CHANGE THIS TO RENDER URL AFTER DEPLOYING
 window.BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? 'http://localhost:4000' 
     : 'https://employ-edge-backend.onrender.com';

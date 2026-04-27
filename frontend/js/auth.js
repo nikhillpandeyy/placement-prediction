@@ -60,6 +60,42 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
     }
 });
 
+const forgotPasswordForm = document.getElementById('forgot-password-form');
+if (forgotPasswordForm) {
+    forgotPasswordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector('button[type="submit"]');
+        const spinner = e.target.querySelector('.spinner');
+        if (btn) btn.disabled = true;
+        if (spinner) spinner.classList.remove('hidden');
+        
+        const email = document.getElementById('reset-email').value.trim();
+        const newPassword = document.getElementById('reset-password').value;
+        
+        try {
+            await api.post('/auth/reset-password', { email, newPassword });
+            if (typeof showToast !== 'undefined') showToast('Success', 'Password reset successfully', 'success');
+            showTab('login');
+        } catch (err) {
+            console.error('Reset password error:', err);
+            if (typeof showToast !== 'undefined') {
+                showToast('Reset Failed', err.message, 'error');
+            } else {
+                const errorDiv = document.getElementById('reset-error');
+                if (errorDiv) {
+                    errorDiv.textContent = err.message;
+                    errorDiv.classList.remove('hidden');
+                } else {
+                    alert(err.message || 'Reset failed');
+                }
+            }
+        } finally {
+            if (btn) btn.disabled = false;
+            if (spinner) spinner.classList.add('hidden');
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.endsWith('dashboard.html') && !localStorage.getItem('token')) {
         window.location.href = 'auth.html';
@@ -71,15 +107,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function showTab(tabId) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(`tab-${tabId}`).classList.add('active');
-    document.getElementById('login-form').classList.add('hidden');
-    document.getElementById('login-form').classList.remove('anim-fade-in-up');
-    document.getElementById('register-form').classList.add('hidden');
-    document.getElementById('register-form').classList.remove('anim-fade-in-up');
-    const form = document.getElementById(`${tabId}-form`);
-    form.classList.remove('hidden');
-    void form.offsetWidth;
-    form.classList.add('anim-fade-in-up');
+    
+    const tabElem = document.getElementById(`tab-${tabId}`);
+    if (tabElem) tabElem.classList.add('active');
+    
+    ['login', 'register', 'forgot-password'].forEach(id => {
+        const form = document.getElementById(`${id}-form`);
+        if (form) {
+            form.classList.add('hidden');
+            form.classList.remove('anim-fade-in-up');
+        }
+    });
+
+    const activeForm = document.getElementById(`${tabId}-form`);
+    if (activeForm) {
+        activeForm.classList.remove('hidden');
+        void activeForm.offsetWidth;
+        activeForm.classList.add('anim-fade-in-up');
+    }
 }
 
 function togglePassword(inputId, btn) {

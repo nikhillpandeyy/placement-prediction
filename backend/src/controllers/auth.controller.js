@@ -35,4 +35,18 @@ const getMe = async (req, res, next) => {
     } catch (err) { next(err); }
 };
 
-module.exports = { register, login, getMe };
+const resetPassword = async (req, res, next) => {
+    try {
+        const { email, newPassword } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+        
+        const salt = await bcrypt.genSalt(12);
+        user.passwordHash = await bcrypt.hash(newPassword, salt);
+        await user.save();
+        
+        res.json({ success: true, message: 'Password reset successfully' });
+    } catch (err) { next(err); }
+};
+
+module.exports = { register, login, getMe, resetPassword };
