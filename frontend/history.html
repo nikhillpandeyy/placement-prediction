@@ -578,5 +578,20 @@
             .hist-search-input, .hist-search-input:focus { width: 100%; }
         }
     </style>
+    <script>
+        // Immediately set user from localStorage to bypass cached scripts
+        try {
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                if (user && user.name) {
+                    const nameEl = document.getElementById('sidebar-user-name');
+                    const avatarEl = document.getElementById('sidebar-avatar');
+                    if (nameEl) nameEl.textContent = user.name;
+                    if (avatarEl) avatarEl.textContent = user.name.charAt(0).toUpperCase();
+                }
+            }
+        } catch(e) {}
+    </script>
 </body>
 </html>

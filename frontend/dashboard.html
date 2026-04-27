@@ -77,10 +77,6 @@
             <button class="topbar-btn theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme" id="theme-icon">
                 🌙
             </button>
-            <button class="topbar-btn" aria-label="Notifications">
-                🔔
-                <span class="notification-dot"></span>
-            </button>
         </div>
     </header>
 
@@ -495,10 +491,24 @@
             const g = h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening';
             const el = document.getElementById('greeting-time');
             if(el) el.textContent = g;
-            // Set name from sidebar
             const nameEl = document.getElementById('sidebar-user-name');
+            const avatarEl = document.getElementById('sidebar-avatar');
             const welcomeEl = document.getElementById('welcome-name');
-            if(nameEl && welcomeEl) {
+            
+            // Immediately set user from localStorage to bypass cached scripts
+            try {
+                const userStr = localStorage.getItem('user');
+                if (userStr) {
+                    const user = JSON.parse(userStr);
+                    if (user && user.name) {
+                        if (nameEl) nameEl.textContent = user.name;
+                        if (avatarEl) avatarEl.textContent = user.name.charAt(0).toUpperCase();
+                        if (welcomeEl) welcomeEl.textContent = user.name.split(' ')[0];
+                    }
+                }
+            } catch(e) {}
+
+            if(nameEl && welcomeEl && welcomeEl.textContent === 'there') {
                 const obs = new MutationObserver(() => {
                     const n = nameEl.textContent.trim().split(' ')[0];
                     if(n && n !== 'User') welcomeEl.textContent = n;

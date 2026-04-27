@@ -5,6 +5,22 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Populate user info from localStorage
+    try {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            if (user && user.name) {
+                const nameEl = document.getElementById('sidebar-user-name');
+                const avatarEl = document.getElementById('sidebar-avatar');
+                if (nameEl) nameEl.textContent = user.name;
+                if (avatarEl) avatarEl.textContent = user.name.charAt(0).toUpperCase();
+            }
+        }
+    } catch (e) {
+        console.error('Error loading user info', e);
+    }
+
     // Highlight active nav item based on current page
     const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
     document.querySelectorAll('.nav-item').forEach(item => {
