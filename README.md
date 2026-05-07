@@ -562,7 +562,9 @@ Get user's prediction history (requires JWT)
 
 ## 👥 Contributors
 
-[Your Name] - [Your University]  
+Nikhil Pandey - LPU  
+Satyam Kumar - LPU  
+Yashika Khurana - LPU  
 Academic Project for Advanced Web Development & Frontend Web Development
 
 ---
